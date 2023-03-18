@@ -14,4 +14,7 @@ urlpatterns = [
     path('students/add', views.students_add, name='students-add'),
     # ex: /campus/students/5/save
     path('students/<int:student_id>/save', views.students_save, name='students-save'),
+
+    # ex: /campus/student-enrollments
+    path('student-enrollments', views.student_enrollments, name='student-enrollments'),
 ]

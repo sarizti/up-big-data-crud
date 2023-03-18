@@ -63,6 +63,36 @@ def students_save(request, student_id):
         return HttpResponseRedirect(reverse('campus:students-detail', args=(the_id,)))
 
 
+def student_enrollments(request):
+    query = """
+    -- este es un comentario dentro de sql
+    SELECT
+        students.name || ' ' || students.last_name AS "Estudiante",
+        enrollments.grade AS "Calificación",
+        courses.semester AS "Semestre",
+        iif(t.degree = 'doctorate', 'Dr.', iif(t.degree = 'masters', 'Mtro.', 'Lic.'))
+            || ' ' || t.name || ' ' || t.last_name
+            AS "Profesor",
+        classes.name || ' (' || classes.school || ')' AS "Clase"
+    FROM enrollments
+    INNER JOIN students ON enrollments.student_id = students.id
+    INNER JOIN courses ON enrollments.course_id = courses.id
+    INNER JOIN teachers AS t ON courses.teacher_id = t.id
+    INNER JOIN classes ON courses.class_id = classes.id;
+    """
+
+    cursor = connection.cursor()
+    result = cursor.execute(query)
+    rows = result.fetchall()
+    headers = [d[0] for d in result.description]
+    context = {
+        'rows': rows,
+        'headers': headers
+    }
+
+    return render(request, 'campus/student_enrollments.html', context)
+
+
 # move to another file:
 
 def dict_fetchall(cursor):
