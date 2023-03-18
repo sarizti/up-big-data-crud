@@ -1,0 +1,16 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Campus</h1>
+
+    <p>
+        Examples:
+        <a href="https://getbootstrap.com/docs/5.0/examples/cheatsheet/#images">cheatsheet</a>
+    </p>
+
+    <ul>
+        <li><a href="{% url 'campus:students-index' %}">Students</a></li>
+    </ul>
+
+{% endblock %}
