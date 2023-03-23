@@ -21,4 +21,6 @@ urlpatterns = [
     # teachers
 
 
+    # ex: /campus/student-enrollments
+    path('student-enrollments', views.student_enrollments, name='student-enrollments'),
 ]

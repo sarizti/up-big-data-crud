@@ -1,0 +1,26 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Student Enrollments</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
