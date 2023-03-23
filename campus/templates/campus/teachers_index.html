@@ -1,0 +1,19 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Teachers</h1>
+
+    <ul>
+    {% for teacher in teachers %}
+        <li>
+            {{ teacher.name }} {{ teacher.last_name }}
+            <a href="{% url 'campus:teachers-detail' teacher.id %}">edit</a>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <div>
+        <a href="{% url 'campus:teachers-add' %}">Add teacher</a>
+    </div>
+{% endblock %}

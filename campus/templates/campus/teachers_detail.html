@@ -1,0 +1,56 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Teacher Detail</h1>
+
+    {% if create %}
+    <form action="{% url 'campus:teachers-create' %}" method="post">
+    {% else %}
+    <form action="{% url 'campus:teachers-save' teacher.id %}" method="post">
+    {% endif %}
+        {% csrf_token %}
+        <ul>
+            <li>
+                <strong>Teacher ID:</strong>
+                {% if create %}
+                    <input type="number" step="1" min="100000" max="1000000" value="" name="id" required>
+                {% else %}
+                    {{ teacher.id }}
+                {% endif %}
+            </li>
+            <li>
+                <strong>Name:</strong>
+                <input type="text" value="{{ teacher.name }}" name="name" required>
+            </li>
+            <li>
+                <strong>Last Name:</strong>
+                <input type="text" value="{{ teacher.last_name }}" name="last_name" required>
+            </li>
+            <li>
+                <strong>Date of Birth:</strong>
+                <input type="date" value="{{ teacher.date_of_birth.isoformat }}" name="date_of_birth" required>
+            </li>
+            <li>
+                <strong>Degree:</strong>
+                <select name="degree" required>
+                    <option value="">Select one...</option>
+                    <option {% if teacher.degree == "bachelors" %}selected{% endif %} value="bachelors">Bachelor's</option>
+                    <option {% if teacher.degree == "masters" %}selected{% endif %} value="masters">Master's</option>
+                    <option {% if teacher.degree == "doctorate" %}selected{% endif %} value="doctorate">Doctorate</option>
+                </select>
+            </li>
+            {% if not create %}
+            <li>
+                <strong>Created At:</strong>
+                {{ teacher.created_at }}
+            </li>
+            {% endif %}
+        </ul>
+        <div>
+            <a href="{% url 'campus:teachers-index' %}">Back</a>
+            <button type="submit">Save</button>
+        </div>
+    </form>
+
+{% endblock %}

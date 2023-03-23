@@ -4,15 +4,19 @@
 
     <h1>Student Detail</h1>
 
-    <form action="{% url 'campus:students-save' student_id %}" method="post">
+    {% if create %}
+    <form action="{% url 'campus:students-create' %}" method="post">
+    {% else %}
+    <form action="{% url 'campus:students-save' student.id %}" method="post">
+    {% endif %}
         {% csrf_token %}
         <ul>
             <li>
                 <strong>Student ID:</strong>
-                {% if student_id == 0 %}
-                    <input type="number" step="1" min="100000" max="1000000" value="" name="student_id" required>
+                {% if create %}
+                    <input type="number" step="1" min="100000" max="1000000" value="" name="id" required>
                 {% else %}
-                    {{ student_id }}
+                    {{ student.id }}
                 {% endif %}
             </li>
             <li>
@@ -47,10 +51,12 @@
                     <input type="checkbox" name="active" {% if student.active %}checked{% endif %}>
                 </label>
             </li>
+            {% if not create %}
             <li>
                 <strong>Created At:</strong>
                 {{ student.created_at }}
             </li>
+            {% endif %}
         </ul>
         <div>
             <a href="{% url 'campus:students-index' %}">Back</a>
