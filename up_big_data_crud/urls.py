@@ -16,7 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from up_big_data_crud import views
+
 urlpatterns = [
-    path('campus/', include('campus.urls')),
-    path('admin/', admin.site.urls),
+    path('', views.index),
+    path('campus', include('campus.urls')),
+    path('admin', admin.site.urls),
 ]

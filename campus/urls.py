@@ -6,6 +6,9 @@ app_name = 'campus'
 urlpatterns = [
     # ex: /campus/
     path('', views.index, name='home'),
+
+    # students
+
     # ex: /campus/students
     path('students', views.students_index, name='students-index'),
     # ex: /campus/students/5
@@ -14,4 +17,8 @@ urlpatterns = [
     path('students/add', views.students_add, name='students-add'),
     # ex: /campus/students/5/save
     path('students/<int:student_id>/save', views.students_save, name='students-save'),
+
+    # teachers
+
+
 ]
