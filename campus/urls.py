@@ -35,6 +35,6 @@ urlpatterns = [
 
     # reports
 
-    # ex: /campus/student-enrollments
-    path('student-enrollments', views.student_enrollments, name='student-enrollments'),
+    # ex: /campus/report/student_enrollments
+    path('report/<report_id>', views.report, name='report'),
 ]

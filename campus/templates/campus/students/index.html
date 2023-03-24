@@ -4,7 +4,7 @@
 
     <h1>Students</h1>
 
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">ID</th>
@@ -15,9 +15,9 @@
                 <th scope="col">Created At</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
             {% for student in students %}
-            <tr>
+            <tr class="{% if not student.active %}text-body text-opacity-50{% endif %}">
                 <th scope="row">
                     <a href="{% url 'campus:students-detail' student.id %}">{{ student.id }}</a>
                 </th>
@@ -32,6 +32,6 @@
     </table>
 
     <div>
-        <a href="{% url 'campus:students-add' %}">Add student</a>
+        <a href="{% url 'campus:students-add' %}" class="btn btn-primary">Add student</a>
     </div>
 {% endblock %}

@@ -26,8 +26,10 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Reports</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li>
-                            {% url 'campus:student-enrollments' as u %}
-                            <a class="dropdown-item {% if request.path == u %}active{% endif %}" href="{{ u }}">Student Enrollments</a>
+                            {% for report_id, report_title in reports.items %}
+                                {% url 'campus:report' report_id as u %}
+                                <a class="dropdown-item {% if request.path == u %}active{% endif %}" href="{{ u }}">{{ report_title }}</a>
+                            {% endfor %}
                         </li>
                     </ul>
                 </li>

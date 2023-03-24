@@ -1,0 +1,55 @@
+{% if create %}{% url 'campus:students-create' as u %}
+{% else %}{% url 'campus:students-save' student.id as u %}{% endif %}
+<form action="{{ u }}" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Student ID:</label>
+        {% if create %}
+            <input type="number" class="form-control" step="1" min="100000" max="1000000" value="100000" name="id" required>
+        {% else %}
+            <span>{{ student.id }}</span>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Name:</label>
+        <input type="text" class="form-control" value="{{ student.name }}" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Last Name:</label>
+        <input type="text" class="form-control" value="{{ student.last_name }}" name="last_name" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Date of Birth:</label>
+        <input type="date" class="form-control" value="{{ student.date_of_birth.isoformat }}" name="date_of_birth" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Favorite Number:</label>
+        <input type="number" class="form-control" step="1" min="0" value="{{ student.favorite_number }}" name="favorite_number" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Country of Origin:</label>
+        <select class="form-control" name="country_of_origin" required>
+            <option value="">Select one...</option>
+            <option {% if student.country_of_origin == "MEX" %}selected{% endif %} value="MEX">Mexico</option>
+            <option {% if student.country_of_origin == "CAN" %}selected{% endif %} value="CAN">Canada</option>
+            <option {% if student.country_of_origin == "USA" %}selected{% endif %} value="USA">United States</option>
+            <option {% if student.country_of_origin == "BOL" %}selected{% endif %} value="BOL">Bolivia</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">
+            Active:
+            <input type="checkbox" name="active" {% if student.active %}checked{% endif %}>
+        </label>
+    </div>
+    {% if not create %}
+    <div class="mb-3">
+        <label class="form-label">Created At:</label>
+        {{ student.created_at }}
+    </div>
+    {% endif %}
+    <div class="mb-3">
+        <a href="{% url 'campus:students-index' %}" class="btn btn-secondary">Back</a>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
