@@ -8,7 +8,7 @@ reports = {
                 students.name || ' ' || students.last_name AS "Estudiante",
                 enrollments.grade AS "Calificación",
                 courses.semester AS "Semestre",
-                iif(t.degree = 'doctorate', 'Dr.', iif(t.degree = 'masters', 'Mtro.', 'Lic.'))
+                CASE t.degree WHEN 'doctorate' THEN 'Dr.' WHEN 'masters' THEN 'Mtro.' ELSE 'Lic.' END
                     || ' ' || t.name || ' ' || t.last_name
                     AS "Profesor",
                 classes.name || ' (' || classes.school || ')' AS "Clase"
@@ -23,7 +23,7 @@ reports = {
         'title': 'Course Enrollments',
         'query': """
             SELECT
-                iif(t.degree = 'doctorate', 'Dr.', iif(t.degree = 'masters', 'Mtro.', 'Lic.'))
+                CASE t.degree WHEN 'doctorate' THEN 'Dr.' WHEN 'masters' THEN 'Mtro.' ELSE 'Lic.' END
                     || ' ' || t.name || ' ' || t.last_name
                     AS "Teacher",
                 c2.name || '(' || c2.school || ')' as "Class",
