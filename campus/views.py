@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.db import connection
 from django.urls import reverse
+import datetime
 
 
 def index(request):
@@ -31,7 +32,8 @@ def students_detail(request, student_id):
 
 
 def students_add(request):
-    student = dict(id='', name='', last_name='', date_of_birth='', favorite_number='', country_of_origin='',
+    dob = datetime.date(1999, 1, 1)
+    student = dict(id='', name='', last_name='', date_of_birth=dob, favorite_number='', country_of_origin='',
                    active='', created_at='')
     return render(request, 'campus/students_detail.html', {'student': student, 'create': True})
 
@@ -95,7 +97,8 @@ def teachers_detail(request, teacher_id):
 
 
 def teachers_add(request):
-    teacher = dict(id='', name='', last_name='', date_of_birth='', degree='', created_at='')
+    dob = datetime.date(1999, 1, 1)
+    teacher = dict(id='', name='', last_name='', date_of_birth=dob, degree='', created_at='')
     return render(request, 'campus/teachers_detail.html', {'teacher': teacher, 'create': True})
 
 

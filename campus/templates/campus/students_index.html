@@ -4,14 +4,32 @@
 
     <h1>Students</h1>
 
-    <ul>
-    {% for student in students %}
-        <li>
-            {{ student.name }} {{ student.last_name }}
-            <a href="{% url 'campus:students-detail' student.id %}">edit</a>
-        </li>
-    {% endfor %}
-    </ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Favorite Number</th>
+                <th scope="col">Date of Birth</th>
+                <th scope="col">Country of Origin</th>
+                <th scope="col">Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <th scope="row">
+                    <a href="{% url 'campus:students-detail' student.id %}">{{ student.id }}</a>
+                </th>
+                <td>{{ student.name }} {{ student.last_name }}</td>
+                <td>{{ student.favorite_number }}</td>
+                <td>{{ student.date_of_birth }}</td>
+                <td>{{ student.country_of_origin }}</td>
+                <td>{{ student.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <div>
         <a href="{% url 'campus:students-add' %}">Add student</a>

@@ -4,17 +4,15 @@
 
     <h1>Student Detail</h1>
 
-    {% if create %}
-    <form action="{% url 'campus:students-create' %}" method="post">
-    {% else %}
-    <form action="{% url 'campus:students-save' student.id %}" method="post">
-    {% endif %}
+    {% if create %}{% url 'campus:students-create' as u %}
+    {% else %}{% url 'campus:students-save' student.id as u %}{% endif %}
+    <form action="{{ u }}" method="post">
         {% csrf_token %}
         <ul>
             <li>
                 <strong>Student ID:</strong>
                 {% if create %}
-                    <input type="number" step="1" min="100000" max="1000000" value="" name="id" required>
+                    <input type="number" step="1" min="100000" max="1000000" value="100000" name="id" required>
                 {% else %}
                     {{ student.id }}
                 {% endif %}
