@@ -54,22 +54,15 @@ def students_detail(request, student_id):
 
 
 def students_add(request):
-    dob = datetime.date(1999, 1, 1)
-    student = dict(id='', name='', last_name='', date_of_birth=dob, favorite_number='', country_of_origin='',
-                   active='', created_at='')
+    student = {'date_of_birth': datetime.date(1999, 1, 1)}
     return render(request, 'campus/students/detail.html', {'student': student, 'create': True})
 
 
 def students_save(request, student_id):
-    posted = [
-        request.POST['name'],
-        request.POST['last_name'],
-        request.POST['date_of_birth'],
-        request.POST['favorite_number'],
-        request.POST['country_of_origin'],
-        1 if 'active' in request.POST else 0,
-        student_id,
-    ]
+    posted = request.POST | {
+        'active': 1 if 'active' in request.POST else 0,
+        'id': student_id,
+    }
     with connection.cursor() as cursor:
         q = """
             UPDATE students
@@ -81,19 +74,13 @@ def students_save(request, student_id):
 
 
 def students_create(request):
-    posted = [
-        request.POST['name'],
-        request.POST['last_name'],
-        request.POST['date_of_birth'],
-        request.POST['favorite_number'],
-        request.POST['country_of_origin'],
-        1 if 'active' in request.POST else 0,
-        request.POST['id'],
-    ]
+    posted = request.POST | {
+        'active': 1 if 'active' in request.POST else 0
+    }
     with connection.cursor() as cursor:
         q = """
             INSERT INTO students (name, last_name, date_of_birth, favorite_number, country_of_origin, active, id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+            VALUES (:name, :last_name, :date_of_birth, :favorite_number, :country_of_origin, :active, :id)"""
         cursor.execute(q, posted)
         connection.commit()
         return HttpResponseRedirect(reverse('campus:students-detail', args=(request.POST['id'],)))
@@ -112,46 +99,38 @@ def teachers_index(request):
 
 def teachers_detail(request, teacher_id):
     with connection.cursor() as cursor:
-        q = "SELECT id, name, last_name, date_of_birth, degree, created_at FROM teachers WHERE id = %s"
+        q = """
+            SELECT id, name, last_name, date_of_birth, degree, created_at
+            FROM teachers
+            WHERE id = %s"""
         cursor.execute(q, [teacher_id])
         teacher = dict_fetchone(cursor)
     return render(request, 'campus/teachers/detail.html', {'teacher': teacher, 'teacher_id': teacher_id})
 
 
 def teachers_add(request):
-    dob = datetime.date(1999, 1, 1)
-    teacher = dict(id='', name='', last_name='', date_of_birth=dob, degree='', created_at='')
-    return render(request, 'campus/teachers/detail.html', {'teacher': teacher, 'create': True})
+    teacher = {'date_of_birth': datetime.date(1999, 1, 1)}
+    context = {'teacher': teacher, 'create': True}
+    return render(request, 'campus/teachers/detail.html', context)
 
 
 def teachers_save(request, teacher_id):
-    posted = [
-        request.POST['name'],
-        request.POST['last_name'],
-        request.POST['date_of_birth'],
-        request.POST['degree'],
-        teacher_id,
-    ]
     with connection.cursor() as cursor:
-        q = "UPDATE teachers SET name=%s, last_name=%s, date_of_birth=%s, degree=%s WHERE id=%s"
-        cursor.execute(q, posted)
+        q = """
+            UPDATE teachers
+            SET name=:name, last_name=:last_name, date_of_birth=:date_of_birth, degree=:degree
+            WHERE id=:id"""
+        cursor.execute(q, request.POST | {'id': teacher_id})
         connection.commit()
         return HttpResponseRedirect(reverse('campus:teachers-detail', args=(teacher_id,)))
 
 
 def teachers_create(request):
-    posted = [
-        request.POST['name'],
-        request.POST['last_name'],
-        request.POST['date_of_birth'],
-        request.POST['degree'],
-        request.POST['id'],
-    ]
     with connection.cursor() as cursor:
         q = """INSERT INTO teachers (name, last_name, date_of_birth, degree, id)
-               VALUES (%s, %s, %s, %s, %s)
+               VALUES (:name, :last_name, :date_of_birth, :degree, :id)
             """
-        cursor.execute(q, posted)
+        cursor.execute(q, request.POST)
         connection.commit()
         return HttpResponseRedirect(reverse('campus:teachers-detail', args=(request.POST['id'],)))
 
