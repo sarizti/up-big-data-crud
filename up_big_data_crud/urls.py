@@ -20,6 +20,6 @@ from up_big_data_crud import views
 
 urlpatterns = [
     path('', views.index),
-    path('campus', include('campus.urls')),
-    path('admin', admin.site.urls),
+    path('campus/', include('campus.urls')),
+    path('admin/', admin.site.urls),
 ]

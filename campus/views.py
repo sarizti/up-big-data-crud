@@ -2,107 +2,164 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.db import connection
 from django.urls import reverse
+import pandas as pd
+import datetime
+
+from .campus_utils import reports, dict_fetchall, dict_fetchone
 
 
 def index(request):
     return render(request, 'campus/home.html')
 
 
+# region: students
+
 def students_index(request):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM students")
+        cursor.execute("""
+            SELECT id, name, last_name, date_of_birth, favorite_number, country_of_origin, active, created_at
+            FROM students""")
         students = dict_fetchall(cursor)
-    return render(request, 'campus/students_index.html', {'students': students})
+    return render(request, 'campus/students/index.html', {'students': students})
 
 
 def students_detail(request, student_id):
     with connection.cursor() as cursor:
-        q = "SELECT * FROM students WHERE id = %s"
+        q = """
+            SELECT id, name, last_name, date_of_birth, favorite_number, country_of_origin, active, created_at
+            FROM students
+            WHERE id = %s"""
         cursor.execute(q, [student_id])
         student = dict_fetchone(cursor)
-    return render(request, 'campus/students_detail.html', {'student': student, 'student_id': student_id})
+        q = """
+            SELECT
+                cl.id as "Class ID",
+                cl.school as "School",
+                c.semester as "Period",
+                e.grade as "Grade"
+            FROM enrollments e
+            JOIN courses c on c.id = e.course_id
+            JOIN classes cl on c.class_id = cl.id
+            WHERE e.student_id = %s"""
+        cursor.execute(q, [student_id])
+        enrollments_rows = cursor.fetchall()
+        enrollments_headers = [d[0] for d in cursor.description]
+
+    context = {
+        'student': student,
+        'enrollments_rows': enrollments_rows,
+        'enrollments_headers': enrollments_headers,
+    }
+    return render(request, 'campus/students/detail.html', context)
 
 
 def students_add(request):
-    with connection.cursor() as cursor:
-        q = "SELECT * FROM students LIMIT 1"  # any, just to get the columns
-        cursor.execute(q)
-        student = dict_fetchone(cursor)
-        student = {k: '' for k in student}  # no values please
-    return render(request, 'campus/students_detail.html', {'student': student, 'student_id': 0})
+    student = {'date_of_birth': datetime.date(1999, 1, 1)}
+    return render(request, 'campus/students/detail.html', {'student': student, 'create': True})
 
 
 def students_save(request, student_id):
-    the_id = request.POST['student_id'] if student_id == 0 else student_id
-    posted = [
-        request.POST['name'],
-        request.POST['last_name'],
-        request.POST['date_of_birth'],
-        request.POST['favorite_number'],
-        request.POST['country_of_origin'],
-        1 if 'active' in request.POST else 0,
-        request.POST['student_id'] if student_id == 0 else student_id,
-    ]
+    posted = request.POST | {
+        'active': 1 if 'active' in request.POST else 0,
+        'id': student_id,
+    }
     with connection.cursor() as cursor:
-        if student_id == 0:  # zero means new student
-            q = """INSERT INTO students (name, last_name, date_of_birth, favorite_number, country_of_origin, active, id)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """
-        else:
-            q = """UPDATE students SET
-                name=%s,
-                last_name=%s,
-                date_of_birth=%s,
-                favorite_number=%s,
-                country_of_origin=%s,
-                active=%s
-                WHERE id=%s
-            """
+        q = """
+            UPDATE students
+            SET name=%s, last_name=%s, date_of_birth=%s, favorite_number=%s, country_of_origin=%s, active=%s
+            WHERE id=%s"""
         cursor.execute(q, posted)
         connection.commit()
-        return HttpResponseRedirect(reverse('campus:students-detail', args=(the_id,)))
+        return HttpResponseRedirect(reverse('campus:students-detail', args=(student_id,)))
 
 
-def student_enrollments(request):
-    query = """
-    -- este es un comentario dentro de sql
-    SELECT
-        students.name || ' ' || students.last_name AS "Estudiante",
-        enrollments.grade AS "Calificación",
-        courses.semester AS "Semestre",
-        iif(t.degree = 'doctorate', 'Dr.', iif(t.degree = 'masters', 'Mtro.', 'Lic.'))
-            || ' ' || t.name || ' ' || t.last_name
-            AS "Profesor",
-        classes.name || ' (' || classes.school || ')' AS "Clase"
-    FROM enrollments
-    INNER JOIN students ON enrollments.student_id = students.id
-    INNER JOIN courses ON enrollments.course_id = courses.id
-    INNER JOIN teachers AS t ON courses.teacher_id = t.id
-    INNER JOIN classes ON courses.class_id = classes.id;
-    """
+def students_create(request):
+    posted = request.POST | {
+        'active': 1 if 'active' in request.POST else 0
+    }
+    with connection.cursor() as cursor:
+        q = """
+            INSERT INTO students (name, last_name, date_of_birth, favorite_number, country_of_origin, active, id)
+            VALUES (:name, :last_name, :date_of_birth, :favorite_number, :country_of_origin, :active, :id)"""
+        cursor.execute(q, posted)
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:students-detail', args=(request.POST['id'],)))
 
+# endregion
+
+
+# region: teachers
+
+def teachers_index(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, name, last_name, date_of_birth, degree, created_at FROM teachers")
+        teachers = dict_fetchall(cursor)
+    return render(request, 'campus/teachers/index.html', {'teachers': teachers})
+
+
+def teachers_detail(request, teacher_id):
+    with connection.cursor() as cursor:
+        q = """
+            SELECT id, name, last_name, date_of_birth, degree, created_at
+            FROM teachers
+            WHERE id = %s"""
+        cursor.execute(q, [teacher_id])
+        teacher = dict_fetchone(cursor)
+    return render(request, 'campus/teachers/detail.html', {'teacher': teacher, 'teacher_id': teacher_id})
+
+
+def teachers_add(request):
+    teacher = {'date_of_birth': datetime.date(1999, 1, 1)}
+    context = {'teacher': teacher, 'create': True}
+    return render(request, 'campus/teachers/detail.html', context)
+
+
+def teachers_save(request, teacher_id):
+    with connection.cursor() as cursor:
+        q = """
+            UPDATE teachers
+            SET name=:name, last_name=:last_name, date_of_birth=:date_of_birth, degree=:degree
+            WHERE id=:id"""
+        cursor.execute(q, request.POST | {'id': teacher_id})
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:teachers-detail', args=(teacher_id,)))
+
+
+def teachers_create(request):
+    with connection.cursor() as cursor:
+        q = """INSERT INTO teachers (name, last_name, date_of_birth, degree, id)
+               VALUES (:name, :last_name, :date_of_birth, :degree, :id)
+            """
+        cursor.execute(q, request.POST)
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:teachers-detail', args=(request.POST['id'],)))
+
+
+# region: reports
+
+def report(request, report_id):
+    rpt = reports[report_id]
     cursor = connection.cursor()
-    result = cursor.execute(query)
-    rows = result.fetchall()
-    headers = [d[0] for d in result.description]
+    result = cursor.execute(rpt['query'])
     context = {
-        'rows': rows,
-        'headers': headers
+        'rows': result.fetchall(),
+        'headers': [d[0] for d in result.description],
+        'report_title': rpt['title'],
     }
 
-    return render(request, 'campus/student_enrollments.html', context)
+    if 'download' in request.GET:
+        response = HttpResponse(content_type='text/csv')
+        pd.DataFrame(context['rows'], columns=context['headers']).set_index(context['headers'][0]).to_csv(response)
+        response['Content-Disposition'] = f'attachment; filename={report_id}.csv'
+        return response
+    else:
+        return render(request, 'campus/reports/campus_report.html', context)
+
+# endregion
 
 
-# move to another file:
-
-def dict_fetchall(cursor):
-    """Return all rows from a cursor as a list of dicts"""
-    columns = [col[0] for col in cursor.description]
-    return [dict(zip(columns, row)) for row in cursor.fetchall()]
-
-
-def dict_fetchone(cursor):
-    """Return one row from a cursor as a dict"""
-    columns = [col[0] for col in cursor.description]
-    row = cursor.fetchone()
-    return dict(zip(columns, row))
+def common(request):
+    return {
+        # for tpl html to render menu
+        'reports': {r: reports[r]['title'] for r in reports}
+    }
