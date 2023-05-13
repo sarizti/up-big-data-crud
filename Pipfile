@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 django = "*"
 pandas = "*"
+pytz = "*"
+tzdata = "*"
 
 [dev-packages]
 
