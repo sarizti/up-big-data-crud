@@ -18,7 +18,7 @@
 
     <div class="tab-content mb-3" id="student-tab-content">
         <div class="tab-pane fade show active" id="edit-tab-pane" role="tabpanel" tabindex="0">
-            {% include 'campus/students/_detail_form.html' with student=student only %}
+            {% include 'campus/students/_detail_form.html' with student=student create=create only %}
         </div>
         <div class="tab-pane fade" id="enrollments-tab-pane" role="tabpanel" tabindex="0">
             {% include 'campus/reports/_report.html' with rows=enrollments_rows headers=enrollments_headers %}

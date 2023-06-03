@@ -1,0 +1,19 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Classes</h1>
+
+    <ul>
+    {% for class in classes %}
+        <li>
+            {{ class.name }}
+            <a href="{% url 'campus:classes-detail' class.id %}">edit</a>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <div>
+        <a href="{% url 'campus:classes-add' %}" class="btn btn-primary" >Add class</a>
+    </div>
+{% endblock %}
