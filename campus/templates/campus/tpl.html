@@ -22,6 +22,10 @@
                     {% url 'campus:teachers-index' as u %}
                     <a class="nav-link {% if request.path == u %}active{% endif %}" href="{{ u }}">Teachers</a>
                 </li>
+                <li class="nav-item">
+                    {% url 'campus:classes-index' as u %}
+                    <a class="nav-link {% if request.path == u %}active{% endif %}" href="{{ u }}">Classes</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Reports</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">

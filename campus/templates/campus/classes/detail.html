@@ -1,0 +1,41 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Class Detail</h1>
+
+    {% if create %}{% url 'campus:classes-create' as u %}
+    {% else %}{% url 'campus:classes-save' classes.id as u %}{% endif %}
+    <form action="{{ u }}" method="post">
+        {% csrf_token %}
+        <ul>
+            <li>
+                <strong>Class ID:</strong>
+                {% if create %}
+                    <input type="number" step="1" min="100000" max="1000000" value="100000" name="id" required>
+                {% else %}
+                    {{ classes.id }}
+                {% endif %}
+            </li>
+            <li>
+                <strong>Name:</strong>
+                <input type="text" value="{{ classes.name }}" name="name" required>
+            </li>
+            <li>
+                <strong>School:</strong>
+                <input type="text" value="{{ classes.school }}" name="school" required>
+            </li>
+            {% if not create %}
+            <li>
+                <strong>Created At:</strong>
+                {{ classes.created_at }}
+            </li>
+            {% endif %}
+        </ul>
+        <div>
+            <a href="{% url 'campus:classes-index' %}">Back</a>
+            <button type="submit">Save</button>
+        </div>
+    </form>
+
+{% endblock %}
