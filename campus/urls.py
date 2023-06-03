@@ -29,9 +29,23 @@ urlpatterns = [
     # ex: /campus/teachers/add
     path('teachers/add', views.teachers_add, name='teachers-add'),
     # ex: /campus/teacher/5/save
-    path('teachers/<int:teachers_id>/save', views.teachers_save, name='teachers-save'),
+    path('teachers/<int:teacher_id>/save', views.teachers_save, name='teachers-save'),
     # ex: /campus/teachers/create
     path('teachers/create', views.teachers_create, name='teachers-create'),
+
+# classes
+
+    # ex: /campus/classes
+    path('classes', views.classes_index, name='classes-index'),
+    # ex: /campus/classes/5
+    path('classes/<int:classe_id>', views.classes_detail, name='classes-detail'),
+    # ex: /campus/classes/add
+    path('classes/add', views.classes_add, name='classes-add'),
+    # ex: /campus/teacher/5/save
+    path('classes/<int:classe_id>/save', views.classes_save, name='classes-save'),
+    # ex: /campus/classes/create
+    path('classes/create', views.classes_create, name='classes-create'),
+
 
     # reports
 

@@ -1,0 +1,37 @@
+{% if create %}{% url 'campus:classes-create' as u %}
+{% else %}{% url 'campus:classes-save' classe.id as u %}{% endif %}
+<form action="{{ u }}" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Class ID:</label>
+        {% if create %}
+            <input type="number" class="form-control" step="1" min="0000" max="10000" value="1000" name="id" required>
+        {% else %}
+            <span>{{ classe.id }}</span>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Name:</label>
+        <input type="text" class="form-control" value="{{ classe.name }}" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">School:</label>
+        <input type="text" class="form-control" value="{{ classe.school }}" name="school" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">
+            Active:
+            <input type="checkbox" name="active" {% if classe.active %}checked{% endif %}>
+        </label>
+    </div>
+    {% if not create %}
+    <div class="mb-3">
+        <label class="form-label">Created At:</label>
+        {{ classe.created_at }}
+    </div>
+    {% endif %}
+    <div class="mb-3">
+        <a href="{% url 'campus:classes-index' %}" class="btn btn-secondary">Back</a>
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>

@@ -1,0 +1,33 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>Classes</h1>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">School</th>
+                <th scope="col">Created At</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for classe in classes %}
+            <!_tr class="{% if not classe.active %}text-body text-opacity-50{% endif %}"_>
+                <th scope="row">
+                    <a href="{% url 'campus:classes-detail' classe.id %}">{{ classe.id }}</a>
+                </th>
+                <td>{{ classe.name }}</td>
+                <td>{{ classe.school }}</td>
+                <td>{{ classe.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <a href="{% url 'campus:classes-add' %}" class="btn btn-dark">Add class</a>
+    </div>
+{% endblock %}

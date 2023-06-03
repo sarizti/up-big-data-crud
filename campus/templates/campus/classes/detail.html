@@ -1,0 +1,22 @@
+{% extends "campus/tpl.html" %}
+
+{% block content %}
+
+    <h1>
+        Classes: {{ classe.name }}
+        <a href="{% url 'campus:classes-index' %}" class="btn btn-secondary float-end">Back</a>
+    </h1>
+
+    <ul class="nav nav-tabs mb-3" id="class-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button" role="tab">Edit</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mb-3" id="classe-tab-content">
+        <div class="tab-pane fade show active" id="edit-tab-pane" role="tabpanel" tabindex="0">
+            {% include 'campus/classes/_detail_form.html' with classe=classe create=create only %}
+        </div>
+    </div>
+
+{% endblock %}
