@@ -29,6 +29,14 @@ python -m pip install --upgrade pip
 python -m pip install --upgrade pipenv
 ```
 
+If your PyCharm project didn't recognize this as a django project, then the green
+"play" button in the toolbar might not work for starting your django app. Then you
+can manually run the script to start the app in the browser with:
+
+```sh
+python manage.py runserver
+```
+
 SQL Scripts
 -----------
 
