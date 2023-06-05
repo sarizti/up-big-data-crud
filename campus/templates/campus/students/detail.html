@@ -21,7 +21,7 @@
             {% include 'campus/students/_detail_form.html' with student=student create=create only %}
         </div>
         <div class="tab-pane fade" id="enrollments-tab-pane" role="tabpanel" tabindex="0">
-            {% include 'campus/students/_detail_enrollments.html' with enrollments_rows=enrollments_rows enrollments_headers=enrollments_headers create=create only %}
+            {% include 'campus/reports/_report.html' with rows=enrollments_rows create=create headers=enrollments_headers only %}
         </div>
     </div>
 

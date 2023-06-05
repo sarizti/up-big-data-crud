@@ -2,8 +2,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.db import connection
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import datetime
+
 
 from .campus_utils import reports, dict_fetchall, dict_fetchone
 
@@ -58,23 +60,37 @@ def students_add(request):
     return render(request, 'campus/students/detail.html', {'student': student, 'create': True})
 
 
+@csrf_exempt
 def students_save(request, student_id):
-    posted = request.POST | {
+    posted = {
+        'name': request.POST['name'],
+        'last_name': request.POST['last_name'],
+        'date_of_birth': request.POST['date_of_birth'],
+        'favorite_number': request.POST['favorite_number'],
+        'country_of_origin': request.POST['country_of_origin'],
         'active': 1 if 'active' in request.POST else 0,
         'id': student_id,
     }
     with connection.cursor() as cursor:
         q = """
             UPDATE students
-            SET name=%s, last_name=%s, date_of_birth=%s, favorite_number=%s, country_of_origin=%s, active=%s
-            WHERE id=%s"""
+            SET name=:name, last_name=:last_name, date_of_birth=:date_of_birth,
+            favorite_number=:favorite_number, country_of_origin=:country_of_origin, active=:active
+            WHERE id=:id"""
         cursor.execute(q, posted)
         connection.commit()
         return HttpResponseRedirect(reverse('campus:students-detail', args=(student_id,)))
 
 
+@csrf_exempt
 def students_create(request):
-    posted = request.POST | {
+    posted = {
+        'id': request.POST['id'],
+        'name': request.POST['name'],
+        'last_name': request.POST['last_name'],
+        'date_of_birth': request.POST['date_of_birth'],
+        'favorite_number': request.POST['favorite_number'],
+        'country_of_origin': request.POST['country_of_origin'],
         'active': 1 if 'active' in request.POST else 0
     }
     with connection.cursor() as cursor:
@@ -133,6 +149,8 @@ def teachers_create(request):
         cursor.execute(q, request.POST)
         connection.commit()
         return HttpResponseRedirect(reverse('campus:teachers-detail', args=(request.POST['id'],)))
+
+# endregion
 
 
 # region: reports
