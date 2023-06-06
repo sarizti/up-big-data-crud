@@ -1,13 +1,13 @@
 
 INSERT INTO students (id, name, last_name, date_of_birth, favorite_number, country_of_origin)
 VALUES (0105123, 'Santiago', 'Arizti', '1989-07-27', 1.5, 'MEX'),
-       (0214020, 'andrea', 'escoto', '2000-03-10', 42,'MEX'),
+       (0214020, 'Andrea', 'Escoto', '2000-03-10', 42,'MEX'),
        (0216072,'Andrea','Perez','1999-11-18',8,'USA'),
        (0248440,'Raul','Estrada','1997-05-24',24,'MEX'),
        (0215080,'Natalia','Villalpando','2000-08-01',7,'MEX'),
        (0167763,'Eduardo','Díaz','1995-11-28',20,'MEX'),
        (0213865,'Juan Manuel','Valdivia','2000-06-04',6,'BOL'),
-       (0214611, 'judith', 'macias' ,'1999-05-17', 15,'MEX'),
+       (0214611, 'Judith', 'Macias' ,'1999-05-17', 15,'MEX'),
        (0205608,'Javier','Orozco','1999-06-09',44,'MEX'),
        (0214177, 'Armando', 'Arroyo', '2000-12-28', 1122,'MEX')
 ON CONFLICT DO UPDATE SET

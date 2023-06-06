@@ -2,6 +2,51 @@
 
 {% block content %}
 
+    <style>
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 400;
+        color:#E2A9C9;
+    }
+
+    .custom-input {
+        background-color:#EEE9DC;
+        border-radius: 25px;
+        padding: 10px;
+        border-color: transparent;
+    }
+
+
+    .primary-button {
+        background-color:#0C3934;
+        height: 48px;
+        padding: 10px 20px;
+        color: #ffffff;
+        text-align: center;
+        font-size: 16px;
+        border-radius: 24px;
+        border-color: transparent;
+    }
+
+    .primary-button:hover {
+        background-color: #E2A9C9;
+        color: #ffffff;
+    }
+
+    .secondary-button {
+        height: 48px;
+        padding: 10px 20px;
+        color: #0C3934;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 300;
+        border-radius: 24px;
+        border-width: 4px;
+        border-color:#E2A9C9;
+    }
+    </style>
+
+
     <h1>Teacher Detail</h1>
 
     {% if create %}{% url 'campus:teachers-create' as u %}
@@ -9,27 +54,28 @@
     <form action="{{ u }}" method="post">
         {% csrf_token %}
         <ul>
-            <li>
+            <li style="font-family: 'Poppins', sans-serif;">
                 <strong>Teacher ID:</strong>
                 {% if create %}
-                    <input type="number" step="1" min="100000" max="1000000" value="100000" name="id" required>
+                    <input type="number"  class="form-control custom-input" step="1" min="100000" max="1000000" name="id" required>
                 {% else %}
                     {{ teacher.id }}
                 {% endif %}
             </li>
-            <li>
+            <li style="font-family: 'Poppins', sans-serif;">
                 <strong>Name:</strong>
-                <input type="text" value="{{ teacher.name }}" name="name" required>
+                <input type="text" class="form-control custom-input" value="{{ teacher.name }}" name="name" required>
             </li>
-            <li>
+            <li style="font-family: 'Poppins', sans-serif;">
                 <strong>Last Name:</strong>
-                <input type="text" value="{{ teacher.last_name }}" name="last_name" required>
+                <input type="text" class="form-control custom-input" value="{{ teacher.last_name }}" name="last_name" required>
             </li>
-            <li>
+            <li style="font-family: 'Poppins', sans-serif;">
                 <strong>Date of Birth:</strong>
-                <input type="date" value="{{ teacher.date_of_birth.isoformat }}" name="date_of_birth" required>
-            </li>
-            <li>
+                <input type="date" class="form-control custom-input" value="{{ teacher.date_of_birth.isoformat }}" name="date_of_birth" required>
+            </li style="font-family: 'Poppins', sans-serif;">
+
+            <li style="font-family: 'Poppins', sans-serif;">
                 <strong>Degree:</strong>
                 <select name="degree" required>
                     <option value="">Select one...</option>
@@ -39,15 +85,15 @@
                 </select>
             </li>
             {% if not create %}
-            <li>
+            <li style="font-family: 'Poppins', sans-serif;">
                 <strong>Created At:</strong>
                 {{ teacher.created_at }}
             </li>
             {% endif %}
         </ul>
         <div>
-            <a href="{% url 'campus:teachers-index' %}">Back</a>
-            <button type="submit">Save</button>
+            <a class="secondary-button" style="font-family: 'Poppins', sans-serif;" href="{% url 'campus:teachers-index' %}">Back</a>
+            <button class="primary-button" type="submit" style="font-family: 'Poppins', sans-serif;">Save</button>
         </div>
     </form>
 

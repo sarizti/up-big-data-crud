@@ -2,10 +2,29 @@
 
 {% block content %}
 
+    <style>
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color:#E2A9C9;
+        }
+        .primary-button {
+            background-color:#0C3934;
+            height: 48px;
+            padding: 10px 20px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 24px;
+            border-color: transparent;
+        }
+
+    </style>
+
     <h1>{{ report_title }}</h1>
 
     {% include 'campus/reports/_report.html' with headers=headers rows=rows %}
 
-    <a href="{{ request.path }}?download" class="btn btn-primary">Download</a>
+    <a href="{{ request.path }}?download" class="primary-button" style="font-family: 'Poppins', sans-serif;">Download</a>
 
 {% endblock %}

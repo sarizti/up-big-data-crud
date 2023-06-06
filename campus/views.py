@@ -2,8 +2,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.db import connection
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import datetime
+
 
 from .campus_utils import reports, dict_fetchall, dict_fetchone
 
@@ -58,23 +60,37 @@ def students_add(request):
     return render(request, 'campus/students/detail.html', {'student': student, 'create': True})
 
 
+@csrf_exempt
 def students_save(request, student_id):
-    posted = request.POST | {
+    posted = {
+        'name': request.POST['name'],
+        'last_name': request.POST['last_name'],
+        'date_of_birth': request.POST['date_of_birth'],
+        'favorite_number': request.POST['favorite_number'],
+        'country_of_origin': request.POST['country_of_origin'],
         'active': 1 if 'active' in request.POST else 0,
         'id': student_id,
     }
     with connection.cursor() as cursor:
         q = """
             UPDATE students
-            SET name=%s, last_name=%s, date_of_birth=%s, favorite_number=%s, country_of_origin=%s, active=%s
-            WHERE id=%s"""
+            SET name=:name, last_name=:last_name, date_of_birth=:date_of_birth,
+            favorite_number=:favorite_number, country_of_origin=:country_of_origin, active=:active
+            WHERE id=:id"""
         cursor.execute(q, posted)
         connection.commit()
         return HttpResponseRedirect(reverse('campus:students-detail', args=(student_id,)))
 
 
+@csrf_exempt
 def students_create(request):
-    posted = request.POST | {
+    posted = {
+        'id': request.POST['id'],
+        'name': request.POST['name'],
+        'last_name': request.POST['last_name'],
+        'date_of_birth': request.POST['date_of_birth'],
+        'favorite_number': request.POST['favorite_number'],
+        'country_of_origin': request.POST['country_of_origin'],
         'active': 1 if 'active' in request.POST else 0
     }
     with connection.cursor() as cursor:
@@ -134,6 +150,113 @@ def teachers_create(request):
         connection.commit()
         return HttpResponseRedirect(reverse('campus:teachers-detail', args=(request.POST['id'],)))
 
+# endregion
+
+
+
+
+def common(request):
+    return {
+        # for tpl html to render menu
+        'reports': {r: reports[r]['title'] for r in reports}
+    }
+
+# region: classes
+
+def classes_index(request):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT id, name,school, created_at
+            FROM classes""")
+        classes = dict_fetchall(cursor)
+    return render(request, 'campus/classes/index.html', {'classes': classes})
+
+def classes_detail(request, clase_id):
+    with connection.cursor() as cursor:
+        q = """
+            SELECT id, name, school, created_at
+            FROM classes
+            WHERE id = %s"""
+        cursor.execute(q, [clase_id])
+        clase = dict_fetchone(cursor)
+    return render(request, 'campus/classes/detail.html', {'classes': clase, 'clase_id': clase_id})
+
+def classes_add(request):
+    clase = dict()
+    context = {'clase': clase, 'create': True}
+    return render(request, 'campus/classes/detail.html', context)
+
+@csrf_exempt
+def classes_save(request, clase_id):
+    with connection.cursor() as cursor:
+        q = """
+            UPDATE classes
+            SET name=:name, school=:school
+            WHERE id=:id"""
+        cursor.execute(q, request.POST | {'id': clase_id})
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:classes-index'))
+
+@csrf_exempt
+def classes_create(request):
+    with connection.cursor() as cursor:
+        q = """INSERT INTO classes (name, school, id)
+               VALUES (:name, :school, :id)
+            """
+        cursor.execute(q, request.POST)
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:classes-index'))
+
+# endregion
+
+# region: courses
+
+def courses_index(request):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT id, class_id, teacher_id, semester, created_at
+            FROM courses""")
+        courses = dict_fetchall(cursor)
+    return render(request, 'campus/courses/index.html', {'courses': courses})
+
+def courses_detail(request, course_id):
+    with connection.cursor() as cursor:
+        q = """
+            SELECT id, class_id, teacher_id, semester, created_at
+            FROM courses
+            WHERE id = %s"""
+        cursor.execute(q, [course_id])
+        course = dict_fetchone(cursor)
+    return render(request, 'campus/courses/detail.html', {'courses': course, 'course_id': course_id})
+
+def courses_add(request):
+    course = dict()
+    context = {'course': course, 'create': True}
+    return render(request, 'campus/courses/detail.html', context)
+
+@csrf_exempt
+def courses_save(request, course_id):
+    with connection.cursor() as cursor:
+        q = """
+            UPDATE courses
+            SET semester=:semester,
+            WHERE id=:id"""
+        cursor.execute(q, request.POST | {'id': course_id})
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:courses-index'))
+
+@csrf_exempt
+def courses_create(request):
+    with connection.cursor() as cursor:
+        q = """INSERT INTO courses (id, class_id, teacher_id, semester)
+               VALUES (:id, :classID, :teacherID, :semester)
+            """
+        cursor.execute(q, request.POST)
+        connection.commit()
+        return HttpResponseRedirect(reverse('campus:courses-index'))
+
+# endregion
+
 
 # region: reports
 
@@ -156,10 +279,3 @@ def report(request, report_id):
         return render(request, 'campus/reports/campus_report.html', context)
 
 # endregion
-
-
-def common(request):
-    return {
-        # for tpl html to render menu
-        'reports': {r: reports[r]['title'] for r in reports}
-    }

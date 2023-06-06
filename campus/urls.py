@@ -37,4 +37,31 @@ urlpatterns = [
 
     # ex: /campus/report/student_enrollments
     path('report/<report_id>', views.report, name='report'),
+
+    # classes
+
+    # ex: /campus/classes
+    path('classes', views.classes_index, name='classes-index'),
+    # ex: /campus/classes/5
+    path('classes/<int:clase_id>', views.classes_detail, name='classes-detail'),
+    # ex: /campus/classes/add
+    path('classes/add', views.classes_add, name='classes-add'),
+    # ex: /campus/classes/5/save
+    path('classes/<int:clase_id>/save', views.classes_save, name='classes-save'),
+    # ex: /campus/classes/create
+    path('classes/create', views.classes_create, name='classes-create'),
+
+    # courses
+
+    # ex: /campus/courses
+    path('courses', views.courses_index, name='courses-index'),
+    # ex: /campus/courses/5
+    path('courses/<int:course_id>', views.courses_detail, name='courses-detail'),
+    # ex: /campus/courses/add
+    path('courses/add', views.courses_add, name='courses-add'),
+    # ex: /campus/courses/5/save
+    path('courses/<int:course_id>/save', views.courses_save, name='courses-save'),
+    # ex: /campus/courses/create
+    path('courses/create', views.courses_create, name='courses-create'),
+
 ]

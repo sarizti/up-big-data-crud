@@ -22,21 +22,19 @@
     </style>
 
 
+
+
     <h1>
-        Student: {{ student.name }} {{ student.last_name }}
-        <a href="{% url 'campus:students-index' %}" class="third-button float-end">Back</a>
+        Course: {{ course.id }}
+        <a href="{% url 'campus:courses-index' %}" class="third-button float-end">Back</a>
     </h1>
 
-    <ul class="nav nav-tabs mb-3" id="student-tab" role="tablist" style="font-family: 'Poppins', sans-serif;">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button" role="tab">Edit</button>
-        </li>
-    </ul>
 
-    <div class="tab-content mb-3" id="student-tab-content">
+    <div class="tab-content mb-3" id="course-tab-content">
         <div class="tab-pane fade show active" id="edit-tab-pane" role="tabpanel" tabindex="0">
-            {% include 'campus/students/_detail_form.html' with student=student create=create only %}
+            {% include 'campus/courses/_detail_form.html' with course=course create=create only %}
         </div>
+
     </div>
 
 {% endblock %}

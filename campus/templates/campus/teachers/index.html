@@ -1,19 +1,55 @@
 {% extends "campus/tpl.html" %}
 
 {% block content %}
+    <style>
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color:#E2A9C9;
+        }
+        .primary-button {
+            background-color:#0C3934;
+            height: 48px;
+            padding: 10px 20px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 24px;
+            border-color: transparent;
+        }
+
+        .primary-button:hover {
+            background-color: #E2A9C9;
+            color: #ffffff;
+        }
+
+        .secondary-button {
+        height: 48px;
+        color: #0C3934;
+        padding-left: 5px;
+        text-align: left;
+        font-size: 16px;
+        font-weight: 300;
+        border-radius: 24px;
+        border-width: 4px;
+        border-color:#E2A9C9;
+    }
+    </style>
+
+
 
     <h1>Teachers</h1>
 
     <ul>
     {% for teacher in teachers %}
-        <li>
+        <li style="font-family: 'Poppins', sans-serif;">
             {{ teacher.name }} {{ teacher.last_name }}
-            <a href="{% url 'campus:teachers-detail' teacher.id %}">edit</a>
+            <a href="{% url 'campus:teachers-detail' teacher.id %}" class="secondary-button" style="font-family: 'Poppins', sans-serif;" >edit</a>
         </li>
     {% endfor %}
     </ul>
 
     <div>
-        <a href="{% url 'campus:teachers-add' %}">Add teacher</a>
+        <a href="{% url 'campus:teachers-add'%}" class="primary-button" style="font-family: 'Poppins', sans-serif;" >Add teacher</a>
     </div>
 {% endblock %}
