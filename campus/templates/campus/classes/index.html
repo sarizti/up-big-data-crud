@@ -17,7 +17,7 @@
             {% for classe in classes %}
             <!_tr class="{% if not classe.active %}text-body text-opacity-50{% endif %}"_>
                 <th scope="row">
-                    <a href="{% url 'campus:classes-detail' classe.id %}">{{ classe.id }}</a>
+                    <a href="{% url 'campus:classes-detail' classe.id %}" class="link-success">{{ classe.id }}</a>
                 </th>
                 <td>{{ classe.name }}</td>
                 <td>{{ classe.school }}</td>

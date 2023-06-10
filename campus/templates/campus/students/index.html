@@ -19,7 +19,7 @@
             {% for student in students %}
             <tr class="{% if not student.active %}text-body text-opacity-50{% endif %}">
                 <th scope="row">
-                    <a href="{% url 'campus:students-detail' student.id %}">{{ student.id }}</a>
+                    <a href="{% url 'campus:students-detail' student.id %}" class="link-success">{{ student.id }}</a>
                 </th>
                 <td>{{ student.name }} {{ student.last_name }}</td>
                 <td>{{ student.favorite_number }}</td>
@@ -32,6 +32,6 @@
     </table>
 
     <div>
-        <a href="{% url 'campus:students-add' %}" class="btn btn-dark btn-rounded">Add student</a>
+        <a href="{% url 'campus:students-add' %}" class="btn btn-dark">Add student</a>
     </div>
 {% endblock %}

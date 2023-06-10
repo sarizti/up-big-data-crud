@@ -79,7 +79,7 @@ def students_save(request, student_id):
             WHERE id=:id"""
         cursor.execute(q, posted)
         connection.commit()
-        return HttpResponseRedirect(reverse('campus:students-detail', args=(student_id,)))
+        return HttpResponseRedirect(reverse('campus:students-index'))
 
 
 @csrf_exempt
@@ -129,16 +129,26 @@ def teachers_add(request):
     context = {'teacher': teacher, 'create': True}
     return render(request, 'campus/teachers/detail.html', context)
 
+
 @csrf_exempt
 def teachers_save(request, teacher_id):
+    posted = {
+        'id': teacher_id,
+        'name': request.POST['name'],
+        'last_name': request.POST['last_name'],
+        'date_of_birth': request.POST['date_of_birth'],
+        'degree': request.POST['degree'],
+        'active': 1 if 'active' in request.POST else 0,
+    }
     with connection.cursor() as cursor:
         q = """
             UPDATE teachers
             SET name=:name, last_name=:last_name, date_of_birth=:date_of_birth, degree=:degree
             WHERE id=:id"""
-        cursor.execute(q, request.POST | {'id': teacher_id})
+        cursor.execute(q, posted)
         connection.commit()
-        return HttpResponseRedirect(reverse('campus:teachers-index'))
+    return HttpResponseRedirect(reverse('campus:teachers-index'))
+
 
 @csrf_exempt
 def teachers_create(request):
@@ -148,15 +158,15 @@ def teachers_create(request):
         'last_name': request.POST['last_name'],
         'date_of_birth': request.POST['date_of_birth'],
         'degree': request.POST['degree'],
-        'active': 1 if 'active' in request.POST else 0
+        'active': 1 if 'active' in request.POST else 0,
     }
     with connection.cursor() as cursor:
-        q = """INSERT INTO teachers (id, name, last_name, date_of_birth, degree)
-               VALUES (:id, :name, :last_name, :date_of_birth, :degree)
+        q = """INSERT INTO teachers (name, last_name, date_of_birth, degree, id)
+               VALUES (:name, :last_name, :date_of_birth, :degree, :id)
             """
-        cursor.execute(q, request.POST)
+        cursor.execute(q, posted)
         connection.commit()
-        return HttpResponseRedirect(reverse('campus:teachers-index'))
+        return HttpResponseRedirect(reverse('campus:teachers-detail', args=(request.POST['id'],)))
 
 # endregion
 
@@ -188,7 +198,7 @@ def classes_add(request):
 @csrf_exempt
 def classes_save(request, classe_id):
     posted = {
-        'id': classes_id,
+        'id': classe_id,
         'name': request.POST['name'],
         'school': request.POST['school'],
         'active': 1 if 'active' in request.POST else 0,
@@ -198,7 +208,7 @@ def classes_save(request, classe_id):
             UPDATE classes
             SET name=:name, school=:school
             WHERE id=:id"""
-        cursor.execute(q, request.POST | {'id': classe_id})
+        cursor.execute(q, posted)
         connection.commit()
         return HttpResponseRedirect(reverse('campus:classes-index'))
 

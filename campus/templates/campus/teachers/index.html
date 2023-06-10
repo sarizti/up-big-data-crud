@@ -8,7 +8,7 @@
     {% for teacher in teachers %}
         <li>
             {{ teacher.name }} {{ teacher.last_name }}
-            <a href="{% url 'campus:teachers-detail' teacher.id %}">edit</a>
+            <a href="{% url 'campus:teachers-detail' teacher.id %}" class="badge bg-success">edit</a>
         </li>
     {% endfor %}
     </ul>
