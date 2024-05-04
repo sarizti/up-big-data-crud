@@ -1,0 +1,14 @@
+{% if class_list %}
+    <ul>
+        {% for class_data in class_list %}
+            <li>
+                <a href="/attendance/class{{ class_data.id }}">
+                    Class <strong>{{ class_data.id }}</strong>
+                    on <strong>{{ class_data.class_date }}</strong>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No classes available</p>
+{% endif %}

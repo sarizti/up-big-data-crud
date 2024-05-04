@@ -8,6 +8,7 @@ django = "*"
 pandas = "*"
 pytz = "*"
 tzdata = "*"
+mysql-connector-python = "*"
 
 [dev-packages]
 

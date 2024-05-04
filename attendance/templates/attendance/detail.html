@@ -1,0 +1,11 @@
+hello, class {{ class_data.id }} on {{ class_data.class_date }}
+
+{% if current_name %}
+    <p>Current name: {{ current_name }}</p>
+{% endif %}
+
+<form action="/attendance/class{{ class_data.id }}" method="post">
+    {% csrf_token %}
+    <input name="your_name" value="{{ current_name }}">
+    <input type="submit" value="OK">
+</form>
